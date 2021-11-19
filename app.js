@@ -2,16 +2,20 @@ import express from 'express';
 const port = 5000;
 const app = express();
 import mongoose from 'mongoose';
+import encryp from 'mongoose-encryption';
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 mongoose.connect('mongodb://localhost:27017/userDB', {});
 
-const userSchema = {
+const userSchema = new mongoose.Schema({
   email: String,
   password: String,
-};
+});
+
+const secret = 'This is a secret';
+userSchema.plugin(encryp, { secret, encryptedFields: ['password'] });
 
 const User = mongoose.model('User', userSchema);
 
